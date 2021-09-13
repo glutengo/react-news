@@ -5,6 +5,7 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const sass = require('sass');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const utils = require('./utils.js');
 const commonConfig = require('./webpack.common.js');
@@ -95,5 +96,6 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
       skipWaiting: true,
       exclude: [/swagger-ui/],
     }),
+    new BundleAnalyzerPlugin({ analyzerMode: 'static' })
   ],
 });

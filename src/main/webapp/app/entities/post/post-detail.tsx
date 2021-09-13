@@ -1,76 +1,49 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps, useHistory } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
 import { getEntity } from './post.reducer';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 
-export interface IPostDetailProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
+import './post-detail.scss';
+
+export interface IPostDetailProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> { }
 
 export const PostDetail = (props: IPostDetailProps) => {
+
+  const history = useHistory();
+
   useEffect(() => {
-    props.getEntity(props.match.params.id);
+    props.getEntity(parseInt(props.match.params.id, 10));
   }, []);
 
   const { postEntity } = props;
   return (
-    <Row>
-      <Col md="8">
-        <h2 data-cy="postDetailsHeading">
-          <Translate contentKey="newsApp.post.detail.title">Post</Translate>
-        </h2>
-        <dl className="jh-entity-details">
-          <dt>
-            <span id="id">
-              <Translate contentKey="global.field.id">ID</Translate>
-            </span>
-          </dt>
-          <dd>{postEntity.id}</dd>
-          <dt>
-            <span id="title">
-              <Translate contentKey="newsApp.post.title">Title</Translate>
-            </span>
-          </dt>
-          <dd>{postEntity.title}</dd>
-          <dt>
-            <span id="content">
-              <Translate contentKey="newsApp.post.content">Content</Translate>
-            </span>
-          </dt>
-          <dd>{postEntity.content}</dd>
-          <dt>
-            <span id="coverImageUrl">
-              <Translate contentKey="newsApp.post.coverImageUrl">Cover Image Url</Translate>
-            </span>
-          </dt>
-          <dd>{postEntity.coverImageUrl}</dd>
-          <dt>
-            <Translate contentKey="newsApp.post.author">Author</Translate>
-          </dt>
-          <dd>{postEntity.author ? postEntity.author.login : ''}</dd>
-          <dt>
-            <Translate contentKey="newsApp.post.category">Category</Translate>
-          </dt>
-          <dd>{postEntity.category ? postEntity.category.name : ''}</dd>
-        </dl>
-        <Button tag={Link} to="/post" replace color="info" data-cy="entityDetailsBackButton">
-          <FontAwesomeIcon icon="arrow-left" />{' '}
-          <span className="d-none d-md-inline">
-            <Translate contentKey="entity.action.back">Back</Translate>
-          </span>
-        </Button>
-        &nbsp;
-        <Button tag={Link} to={`/post/${postEntity.id}/edit`} replace color="primary">
-          <FontAwesomeIcon icon="pencil-alt" />{' '}
-          <span className="d-none d-md-inline">
-            <Translate contentKey="entity.action.edit">Edit</Translate>
-          </span>
-        </Button>
-      </Col>
+    <Row className="justify-content-center post-detail">
+      {postEntity && (
+        <Col md="12 " className="d-flex align-items-center flex-column">
+          <Button tag={Link} replace color="link" className="mr-2 align-self-start" data-cy="entityDetailsBackButton" onClick={() => history.goBack()}>
+            <FontAwesomeIcon icon="arrow-left" />{' '}
+          </Button>
+          <h2 className="display-4 text-center my-4">
+            {postEntity.title}
+          </h2>
+          <Row className="align-self-stretch">
+            <img className="mt-4" width="100%" height="400px" src={postEntity.coverImageUrl} />
+          </Row>
+          <div className="post-detail-meta my-4 text-center">
+            {postEntity.author && (
+              <span className="post-item-author" >published by <i>{postEntity.author.login} </i></span>
+            )}
+            {postEntity.category && (
+              <span className="post-item-category">in <i>{postEntity.category.name}</i></span>
+            )}
+          </div>
+          <div className="post-detail-content text-justify col-md-8">{postEntity.content}</div>
+        </Col>
+      )}
     </Row>
   );
 };

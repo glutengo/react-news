@@ -1,0 +1,21 @@
+.post-item {
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .post-item-data {
+    padding: 8px;
+
+    span {
+      opacity: .7;
+    }
+  }
+}

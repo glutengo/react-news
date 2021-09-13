@@ -8,6 +8,7 @@ export interface IPost {
   coverImageUrl?: string | null;
   author?: IUser | null;
   category?: ICategory | null;
+  excerpt?: string | null;
 }
 
 export const defaultValue: Readonly<IPost> = {};

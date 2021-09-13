@@ -106,7 +106,7 @@ export const PostUpdate = (props: IPostUpdateProps) => {
                 <Label for="post-author">
                   <Translate contentKey="newsApp.post.author">Author</Translate>
                 </Label>
-                <AvInput id="post-author" data-cy="author" type="select" className="form-control" name="authorId">
+                <AvInput id="post-author" data-cy="author" type="select" className="form-control" name="authorId" defaultValue={postEntity.author?.id}>
                   <option value="" key="0" />
                   {users
                     ? users.map(otherEntity => (
@@ -121,7 +121,7 @@ export const PostUpdate = (props: IPostUpdateProps) => {
                 <Label for="post-category">
                   <Translate contentKey="newsApp.post.category">Category</Translate>
                 </Label>
-                <AvInput id="post-category" data-cy="category" type="select" className="form-control" name="categoryId">
+                <AvInput id="post-category" data-cy="category" type="select" className="form-control" name="categoryId" defaultValue={postEntity.category?.id}>
                   <option value="" key="0" />
                   {categories
                     ? categories.map(otherEntity => (

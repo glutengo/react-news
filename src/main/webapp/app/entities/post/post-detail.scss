@@ -1,0 +1,11 @@
+.post-detail {
+  img {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .post-detail-content {
+    line-height: 1.8em;
+    white-space: pre-line;
+  }
+}

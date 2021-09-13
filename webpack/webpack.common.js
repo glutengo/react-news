@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
+
 const utils = require('./utils.js');
 
 const getTsLoaderRule = env => {
@@ -141,7 +142,7 @@ module.exports = options =>
               // jhipster-needle-i18n-language-webpack - JHipster will add/remove languages in this array
             ],
           },
-        }),
+        })
       ],
     }
   );

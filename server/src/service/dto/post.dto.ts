@@ -16,6 +16,9 @@ export class PostDTO extends BaseDTO {
     @ApiModelProperty({ description: 'content field', required: false })
     content: string;
 
+    @ApiModelProperty({ description: 'excerpt field', required: false })
+    excerpt?: string;
+
     @ApiModelProperty({ description: 'coverImageUrl field', required: false })
     coverImageUrl: string;
 

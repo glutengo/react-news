@@ -5,6 +5,7 @@ import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { ICategory, defaultValue } from 'app/shared/model/category.model';
+import { EXCERPT_LENGTH, setQueryParams } from 'app/shared/util/pagination.constants';
 
 export const ACTION_TYPES = {
   FETCH_CATEGORY_LIST: 'category/FETCH_CATEGORY_LIST',
@@ -105,11 +106,21 @@ const apiUrl = 'api/categories';
 
 // Actions
 
-export const getEntities: ICrudGetAllAction<ICategory> = (page, size, sort) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+export const getEntities = (page?, size?, sort?, includePosts?) => {
+  const url = new URL(`/${apiUrl}`, window.location.origin);
+  setQueryParams(url, {
+    page,
+    size,
+    sort,
+    cacheBuster: `${new Date().getTime()}`
+  });
+  if (includePosts) {
+    url.searchParams.set('includePosts', includePosts);
+    url.searchParams.set('postExcerptLength', `${EXCERPT_LENGTH}`);
+  }
   return {
     type: ACTION_TYPES.FETCH_CATEGORY_LIST,
-    payload: axios.get<ICategory>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`),
+    payload: axios.get<ICategory>(url.toString()),
   };
 };
 

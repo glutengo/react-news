@@ -5,6 +5,7 @@ import { cleanEntity } from 'app/shared/util/entity-utils';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
 
 import { IPost, defaultValue } from 'app/shared/model/post.model';
+import { EXCERPT_LENGTH, setQueryParams } from 'app/shared/util/pagination.constants';
 
 export const ACTION_TYPES = {
   FETCH_POST_LIST: 'post/FETCH_POST_LIST',
@@ -105,11 +106,18 @@ const apiUrl = 'api/posts';
 
 // Actions
 
-export const getEntities: ICrudGetAllAction<IPost> = (page, size, sort) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+export const getEntities = (page?, size?, sort?, category?) => {
+  const url = new URL(`/${apiUrl}`, window.location.origin);
+  setQueryParams(url, {
+    page,
+    size,
+    sort,
+    excerptLength: `${EXCERPT_LENGTH}`,
+    cacheBuster: `${new Date().getTime()}`
+  });
   return {
     type: ACTION_TYPES.FETCH_POST_LIST,
-    payload: axios.get<IPost>(`${requestUrl}${sort ? '&' : '?'}cacheBuster=${new Date().getTime()}`),
+    payload: axios.get<IPost>(url.toString()),
   };
 };
 

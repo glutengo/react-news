@@ -20,9 +20,9 @@ import { AuthGuard, Roles, RolesGuard, RoleType } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
+import { FindManyOptions } from 'typeorm';
 
 @Controller('api/posts')
-@UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
 @ApiBearerAuth()
 @ApiUseTags('posts')
@@ -40,11 +40,15 @@ export class PostController {
     })
     async getAll(@Req() req: Request): Promise<PostDTO[]> {
         const pageRequest: PageRequest = new PageRequest(req.query.page, req.query.size, req.query.sort);
-        const [results, count] = await this.postService.findAndCount({
+        const options: FindManyOptions = {
             skip: +pageRequest.page * pageRequest.size,
             take: +pageRequest.size,
             order: pageRequest.sort.asOrder(),
-        });
+        };
+        if (req.query.category) {
+          options.where = { category: { id: req.query.category }};
+        }
+        const [results, count] = await this.postService.findAndCount(options, req.query.excerptLength);
         HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
         return results;
     }
@@ -61,6 +65,7 @@ export class PostController {
     }
 
     @PostMethod('/')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Create post' })
     @ApiResponse({
@@ -76,6 +81,7 @@ export class PostController {
     }
 
     @Put('/')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Update post' })
     @ApiResponse({
@@ -89,6 +95,7 @@ export class PostController {
     }
 
     @Put('/:id')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Update post with id' })
     @ApiResponse({
@@ -102,6 +109,7 @@ export class PostController {
     }
 
     @Delete('/:id')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Delete post' })
     @ApiResponse({

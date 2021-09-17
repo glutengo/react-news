@@ -17,7 +17,7 @@ export class PostMapper {
         return entity;
     }
 
-    static fromEntityToDTO(entity: Post): PostDTO {
+    static fromEntityToDTO(entity: Post, excerptLength?: number): PostDTO {
         if (!entity) {
             return;
         }
@@ -26,7 +26,11 @@ export class PostMapper {
         const fields = Object.getOwnPropertyNames(entity);
 
         fields.forEach(field => {
-            entityDTO[field] = entity[field];
+            if (field === 'content' && excerptLength) {
+                entityDTO.excerpt = entity.content.substring(0, excerptLength);
+            } else {
+                entityDTO[field] = entity[field];
+            }
         });
 
         return entityDTO;

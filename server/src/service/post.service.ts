@@ -26,12 +26,12 @@ export class PostService {
         return PostMapper.fromEntityToDTO(result);
     }
 
-    async findAndCount(options: FindManyOptions<PostDTO>): Promise<[PostDTO[], number]> {
+    async findAndCount(options: FindManyOptions<PostDTO>, excerptLength?: number): Promise<[PostDTO[], number]> {
         options.relations = relationshipNames;
         const resultList = await this.postRepository.findAndCount(options);
         const postDTO: PostDTO[] = [];
         if (resultList && resultList[0]) {
-            resultList[0].forEach(post => postDTO.push(PostMapper.fromEntityToDTO(post)));
+            resultList[0].forEach(post => postDTO.push(PostMapper.fromEntityToDTO(post, excerptLength)));
             resultList[0] = postDTO;
         }
         return resultList;

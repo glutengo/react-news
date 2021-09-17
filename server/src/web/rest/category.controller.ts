@@ -11,6 +11,8 @@ import {
     UseGuards,
     Req,
     UseInterceptors,
+    Inject,
+    forwardRef,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiUseTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { CategoryDTO } from '../../service/dto/category.dto';
@@ -20,16 +22,18 @@ import { AuthGuard, Roles, RolesGuard, RoleType } from '../../security';
 import { HeaderUtil } from '../../client/header-util';
 import { Request } from '../../client/request';
 import { LoggingInterceptor } from '../../client/interceptors/logging.interceptor';
+import { PostService } from '../../service/post.service';
 
 @Controller('api/categories')
-@UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(LoggingInterceptor, ClassSerializerInterceptor)
 @ApiBearerAuth()
 @ApiUseTags('categories')
 export class CategoryController {
     logger = new Logger('CategoryController');
 
-    constructor(private readonly categoryService: CategoryService) {}
+    constructor(private readonly categoryService: CategoryService,
+                @Inject(forwardRef(() => PostService)) private readonly postService: PostService
+    ) {}
 
     @Get('/')
     @Roles(RoleType.USER)
@@ -45,6 +49,11 @@ export class CategoryController {
             take: +pageRequest.size,
             order: pageRequest.sort.asOrder(),
         });
+        if (req.query.includePosts) {
+          for (const category of results) {
+            category.posts = (await this.postService.findAndCount({take: req.query.includePosts, where: { category: { id: category.id }}}, req.query.postExcerptLength))[0];
+          }
+        }
         HeaderUtil.addPaginationHeaders(req.res, new Page(results, count, pageRequest));
         return results;
     }
@@ -61,6 +70,7 @@ export class CategoryController {
     }
 
     @PostMethod('/')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Create category' })
     @ApiResponse({
@@ -76,6 +86,7 @@ export class CategoryController {
     }
 
     @Put('/')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Update category' })
     @ApiResponse({
@@ -89,6 +100,7 @@ export class CategoryController {
     }
 
     @Put('/:id')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Update category with id' })
     @ApiResponse({
@@ -102,6 +114,7 @@ export class CategoryController {
     }
 
     @Delete('/:id')
+    @UseGuards(AuthGuard, RolesGuard)
     @Roles(RoleType.ADMIN)
     @ApiOperation({ title: 'Delete category' })
     @ApiResponse({

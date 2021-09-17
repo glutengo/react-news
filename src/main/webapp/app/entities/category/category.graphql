@@ -1,9 +1,11 @@
-
-query getCategories($page: Int, $size: Int, $sort: String) {
+query getCategories($page: Int, $size: Int, $sort: String, $includePosts: Boolean = false, $takePosts: Int) {
     result: getCategories(page: $page, size: $size, sort: $sort) {
         edges {
             node {
-                ...DetailCategory
+                ...BaseCategory
+                posts(take: $takePosts) @include(if: $includePosts) {
+                    ...ListPost
+                }
             }
         }
         totalCount
@@ -12,7 +14,7 @@ query getCategories($page: Int, $size: Int, $sort: String) {
 
 query getCategory($id: Int!) {
     result: getCategory(id: $id) {
-        ...DetailCategory
+        ...BaseCategory
     }
 }
 
@@ -39,4 +41,7 @@ fragment BaseCategory on Category {
 
 fragment DetailCategory on Category {
     ...BaseCategory
+    posts {
+        ...BasePost
+    }
 }

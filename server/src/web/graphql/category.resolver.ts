@@ -10,11 +10,11 @@ import { pageRequestToFindManyOptions } from './pagination-util';
 import { PubSubService } from '../../service/graphql/pub-sub.service';
 import { AuthGuard, RolesGuard } from '../../security';
 import { transformField } from './field-resolver-util';
+import { PostService } from '../../service/post.service';
 
-@UseGuards(AuthGuard, RolesGuard)
 @Resolver(() => Category)
 export class CategoryResolver {
-    constructor(private categoryService: CategoryService, private pubSub: PubSubService) {}
+    constructor(private categoryService: CategoryService, private pubSub: PubSubService, private postService: PostService) {}
 
     @Query(() => PaginatedCategory)
     async getCategories(@Args() options: PaginationArgs): Promise<PaginatedCategory> {
@@ -29,20 +29,28 @@ export class CategoryResolver {
         return this.categoryService.findById(id);
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Mutation(() => Category)
     async createCategory(@Args('category') category: CreateCategoryArgs): Promise<Category> {
         return await this.categoryService.save(category);
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Mutation(() => Category)
     async updateCategory(@Args('category') category: UpdateCategoryArgs): Promise<Category> {
         return await this.categoryService.update(category);
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
     @Mutation(() => Number)
     async deleteCategory(@Args('id') id: number): Promise<number> {
         await this.categoryService.deleteById(id);
         return id;
+    }
+
+    @ResolveField()
+    async posts(@Parent() category: Category, @Args('take', {nullable: true }) take?: number) {
+        return (await this.postService.findAndCount({take, where: { category: { id: category.id }}}))[0];
     }
 
     @Subscription(() => Number)

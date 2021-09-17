@@ -34,6 +34,7 @@ export const CategoryDetail = (props: ICategoryDetailProps) => {
       paginationState.activePage - 1,
       paginationState.itemsPerPage,
       `${paginationState.sort},${paginationState.order}`,
+      false,
       categoryId
     );
   }, [paginationState.activePage, paginationState.order, paginationState.sort]);

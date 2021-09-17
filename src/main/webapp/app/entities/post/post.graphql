@@ -1,9 +1,9 @@
 
-query getPosts($page: Int, $size: Int, $sort: String) {
-    result: getPosts(page: $page, size: $size, sort: $sort) {
+query getPosts($page: Int, $size: Int, $sort: String, $category: Int) {
+    result: getPosts(page: $page, size: $size, sort: $sort, category: $category) {
         edges {
             node {
-                ...DetailPost
+                ...ListPost
             }
         }
         totalCount
@@ -35,12 +35,10 @@ mutation updatePost($post: UpdatePostArgs!) {
 fragment BasePost on Post {
     id
     title
-    content
     coverImageUrl
 }
 
-fragment DetailPost on Post {
-    ...BasePost
+fragment PostRelations on Post {
     author {
         id
         login
@@ -49,4 +47,16 @@ fragment DetailPost on Post {
         id
         name
     }
+}
+
+fragment DetailPost on Post {
+    ...BasePost
+    ...PostRelations
+    content
+}
+
+fragment ListPost on Post {
+    ...BasePost
+    ...PostRelations
+    excerpt: content(length: 50)
 }

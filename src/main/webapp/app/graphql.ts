@@ -24,6 +24,11 @@ export type Category = {
   posts?: Maybe<Array<Post>>;
 };
 
+
+export type CategoryPostsArgs = {
+  take?: Maybe<Scalars['Int']>;
+};
+
 export type CategoryEdge = {
   cursor?: Maybe<Scalars['String']>;
   node: Category;
@@ -206,6 +211,7 @@ export type QueryGetPostsArgs = {
   page?: Maybe<Scalars['Int']>;
   size?: Maybe<Scalars['Int']>;
   sort?: Maybe<Scalars['String']>;
+  category?: Maybe<Scalars['Int']>;
 };
 
 

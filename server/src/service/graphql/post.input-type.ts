@@ -1,11 +1,11 @@
 /* eslint-disable max-classes-per-file */
-
-import { Field, HideField, InputType, OmitType, PartialType } from '@nestjs/graphql';
+import { ArgsType, Field, HideField, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { PostDTO } from '../dto/post.dto';
 import { UserDTO } from '../dto/user.dto';
 import { UserReference } from './user.input-type';
 import { CategoryDTO } from '../dto/category.dto';
 import { CategoryReference } from './category.input-type';
+import { PaginationArgs } from '../../web/graphql/pagination-util';
 
 @InputType()
 class FullPostInput extends PostDTO {}
@@ -37,4 +37,9 @@ export class UpdatePostArgs extends CreatePostArgs {
     author: UserDTO;
     @Field(() => CategoryReference, { nullable: true })
     category: CategoryDTO;
+}
+
+@ArgsType()
+export class GetPostsArgs extends PaginationArgs {
+    category?: number;
 }

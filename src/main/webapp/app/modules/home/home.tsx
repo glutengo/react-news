@@ -18,7 +18,7 @@ export const Home = (props: IHomeProp) => {
 
   useEffect(() => {
     props.getPosts(0, POSTS_PER_CATEGORY);
-    props.getCategories(0, 20, null, POSTS_PER_CATEGORY);
+    props.getCategories(0, 20, null, false, POSTS_PER_CATEGORY);
   }, []);
 
   return (

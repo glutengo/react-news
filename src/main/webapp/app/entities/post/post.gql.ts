@@ -12,7 +12,7 @@ import {
   QueryGetPostArgs,
   UpdatePostArgsImpl,
 } from 'app/graphql';
-import { BasePost, DetailPost, PaginationVars } from 'app/graphql/graphql.common-types';
+import { BasePost, DetailPost, ListPost, PaginationVars } from 'app/graphql/graphql.common-types';
 
 @ArgsType()
 class GetPostVars implements QueryGetPostArgs {
@@ -26,11 +26,13 @@ class GetPostQuery {
 }
 
 @ArgsType()
-class GetPostsVars extends PaginationVars {}
+class GetPostsVars extends PaginationVars {
+  category?: number;
+}
 
 @ObjectType()
 class PostEdgeResult implements Partial<PostEdge> {
-  node!: DetailPost;
+  node!: ListPost;
 }
 
 @ObjectType()
@@ -84,4 +86,4 @@ export const CreatePostDocument = buildMutation(CreatePostMutation, CreatePostVa
 export const UpdatePostDocument = buildMutation(UpdatePostMutation, UpdatePostVars);
 export const DeletePostDocument = buildMutation(DeletePostMutation, DeletePostVars);
 
-const usedClasses = [CreatePostArgsImpl, UpdatePostArgsImpl];
+const usedClasses = [CreatePostArgsImpl, UpdatePostArgsImpl, ListPost];

@@ -1,4 +1,4 @@
-import { ArgsType, ObjectType } from 'graphql-typeop';
+import { ArgsType, Field, ObjectType } from 'graphql-typeop';
 import { User, Post, Category } from 'app/graphql';
 
 @ArgsType()
@@ -48,4 +48,12 @@ export class DetailCategory extends BaseCategory implements Partial<Category> {}
 export class DetailPost extends BasePost implements Partial<Post> {
   author!: BaseUser;
   category!: BaseCategory;
+}
+
+@ObjectType()
+export class ListPost extends DetailPost implements Partial<Post> {
+  @Field<Post>({ args: { length: 50 }, aliasFor: 'content'})
+  excerpt!: string;
+  @Field({skip: true})
+  content!: string;
 }

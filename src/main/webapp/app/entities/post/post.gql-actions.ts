@@ -5,9 +5,9 @@ import { IPost } from 'app/shared/model/post.model';
 import { ICrudDeleteAction, ICrudPutAction } from 'react-jhipster';
 import { ACTION_TYPES } from './post.reducer';
 
-export const getEntities = (page?, size?, sort?, bypassCache?) => {
+export const getEntities = (page?, size?, sort?, bypassCache?, category?) => {
   const payload = client
-    .query({ query: GetPostsDocument, variables: { page, size, sort }, fetchPolicy: bypassCache ? 'no-cache' : 'cache-first' })
+    .query({ query: GetPostsDocument, variables: { page, size, sort, category }, fetchPolicy: bypassCache ? 'no-cache' : 'cache-first' })
     .then(res => ({ data: res.data.result.edges.map(e => e.node), headers: { 'x-total-count': res.data.result.totalCount } }));
   return {
     type: ACTION_TYPES.FETCH_POST_LIST,

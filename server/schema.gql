@@ -44,7 +44,7 @@ type Category {
   lastModifiedBy: String
   lastModifiedDate: DateTime
   name: String
-  posts: [Post!]
+  posts(take: Int): [Post!]
 }
 
 type CategoryEdge {
@@ -86,7 +86,7 @@ type Query {
   getUsers(page: Int, size: Int, sort: String): PaginatedUser!
   getUser(login: String!): User!
   getAuthorities: [String!]!
-  getPosts(page: Int, size: Int, sort: String): PaginatedPost!
+  getPosts(page: Int, size: Int, sort: String, category: Int): PaginatedPost!
   getPost(id: Int!): Post!
   getCategories(page: Int, size: Int, sort: String): PaginatedCategory!
   getCategory(id: Int!): Category!

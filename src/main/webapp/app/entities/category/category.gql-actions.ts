@@ -11,9 +11,9 @@ import { ICategory } from 'app/shared/model/category.model';
 import { ICrudDeleteAction, ICrudPutAction } from 'react-jhipster';
 import { ACTION_TYPES } from './category.reducer';
 
-export const getEntities = (page?, size?, sort?, bypassCache?) => {
+export const getEntities = (page?, size?, sort?, bypassCache?, takePosts?) => {
   const payload = client
-    .query({ query: GetCategoriesDocument, variables: { page, size, sort }, fetchPolicy: bypassCache ? 'no-cache' : 'cache-first' })
+    .query({ query: GetCategoriesDocument, variables: { page, size, sort, includePosts: !!takePosts, takePosts }, fetchPolicy: bypassCache ? 'no-cache' : 'cache-first' })
     .then(res => ({ data: res.data.result.edges.map(e => e.node), headers: { 'x-total-count': res.data.result.totalCount } }));
   return {
     type: ACTION_TYPES.FETCH_CATEGORY_LIST,

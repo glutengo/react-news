@@ -51,6 +51,11 @@
     "nativeLanguage": "en",
     "creationTimestamp": 1631525604028,
     "jwtSecretKey": "ZmZjYTJlMGRkZDgzZDllOTM3MTYyZmRjY2Q0YzE5N2U2ZWU2YWNmM2U3YmU0N2FmZTFkMDI5NDE4OGZhODVjNDU1Y2JlZjYzYmZkZGM1Y2Y5Yzk3MmY1ZTcyOWMxOTc1N2MyMzk2ZDE3YTJjZGI0Mzk2OWVjOTNiYzdjNmUzMjY=",
-    "lastLiquibaseTimestamp": 1631525724000
+    "lastLiquibaseTimestamp": 1631525724000,
+    "gql": {
+      "typeDefinition": "TypeScript",
+      "schemaLocation": "server/schema.gql",
+      "endpoint": "/graphql"
+    }
   }
 }

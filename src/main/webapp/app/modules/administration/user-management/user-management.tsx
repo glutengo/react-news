@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { APP_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { getUsersAsAdmin, updateUser } from './user-management.reducer';
+import { getUsersAsAdmin, updateUser } from './user-management.gql-actions';
 import { IRootState } from 'app/shared/reducers';
 
 export interface IUserManagementProps extends StateProps, DispatchProps, RouteComponentProps<any> {}
@@ -18,8 +18,8 @@ export const UserManagement = (props: IUserManagementProps) => {
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
   );
 
-  const getUsersFromProps = () => {
-    props.getUsersAsAdmin(pagination.activePage - 1, pagination.itemsPerPage, `${pagination.sort},${pagination.order}`);
+  const getUsersFromProps = (bypassCache?: boolean) => {
+    props.getUsersAsAdmin(pagination.activePage - 1, pagination.itemsPerPage, `${pagination.sort},${pagination.order}`, bypassCache);
     const endURL = `?page=${pagination.activePage}&sort=${pagination.sort},${pagination.order}`;
     if (props.location.search !== endURL) {
       props.history.push(`${props.location.pathname}${endURL}`);
@@ -59,7 +59,7 @@ export const UserManagement = (props: IUserManagementProps) => {
     });
 
   const handleSyncList = () => {
-    getUsersFromProps();
+    getUsersFromProps(true);
   };
 
   const toggleActive = user => () =>

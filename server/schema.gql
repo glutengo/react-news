@@ -1,0 +1,223 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  login: String
+  firstName: String
+  lastName: String
+  email: String
+  activated: Boolean
+  langKey: String
+  authorities: [String!]
+  imageUrl: String
+  activationKey: String
+  resetKey: String
+  resetDate: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserEdge {
+  cursor: String
+  node: User!
+}
+
+type PaginatedUser {
+  edges: [UserEdge!]!
+  totalCount: Int
+  hasNextPage: Boolean
+}
+
+type Category {
+  id: Int
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  name: String
+  posts: [Post!]
+}
+
+type CategoryEdge {
+  cursor: String
+  node: Category!
+}
+
+type PaginatedCategory {
+  edges: [CategoryEdge!]!
+  totalCount: Int
+  hasNextPage: Boolean
+}
+
+type Post {
+  id: Int
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  title: String
+  content(length: Int): String
+  coverImageUrl: String
+  author: User
+  category: Category
+}
+
+type PostEdge {
+  cursor: String
+  node: Post!
+}
+
+type PaginatedPost {
+  edges: [PostEdge!]!
+  totalCount: Int
+  hasNextPage: Boolean
+}
+
+type Query {
+  getUsers(page: Int, size: Int, sort: String): PaginatedUser!
+  getUser(login: String!): User!
+  getAuthorities: [String!]!
+  getPosts(page: Int, size: Int, sort: String): PaginatedPost!
+  getPost(id: Int!): Post!
+  getCategories(page: Int, size: Int, sort: String): PaginatedCategory!
+  getCategory(id: Int!): Category!
+}
+
+type Mutation {
+  createUser(user: CreateUserArgs!): User!
+  updateUser(user: UpdateUserArgs!): User!
+  deleteUser(login: String!): User!
+  createPost(post: CreatePostArgs!): Post!
+  updatePost(post: UpdatePostArgs!): Post!
+  deletePost(id: Int!): Int!
+  createCategory(category: CreateCategoryArgs!): Category!
+  updateCategory(category: UpdateCategoryArgs!): Category!
+  deleteCategory(id: Int!): Int!
+}
+
+input CreateUserArgs {
+  id: Int
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  login: String!
+  firstName: String
+  lastName: String
+  email: String!
+  activated: Boolean
+  langKey: String
+  authorities: [String!]!
+  imageUrl: String
+  activationKey: String
+  resetKey: String
+  resetDate: DateTime
+  password: String
+}
+
+input UpdateUserArgs {
+  id: Int!
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  login: String!
+  firstName: String
+  lastName: String
+  email: String!
+  activated: Boolean
+  langKey: String
+  authorities: [String!]!
+  imageUrl: String
+  activationKey: String
+  resetKey: String
+  resetDate: DateTime
+  password: String
+}
+
+input CreatePostArgs {
+  id: Int
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  title: String!
+  content: String!
+  coverImageUrl: String!
+  author: UserReference!
+  category: CategoryReference!
+}
+
+input UserReference {
+  id: Int!
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  login: String
+  firstName: String
+  lastName: String
+  email: String
+  activated: Boolean
+  langKey: String
+  authorities: [String!]
+  imageUrl: String
+  activationKey: String
+  resetKey: String
+  resetDate: DateTime
+}
+
+input CategoryReference {
+  id: Int!
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  name: String
+}
+
+input UpdatePostArgs {
+  id: Int!
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  title: String!
+  content: String!
+  coverImageUrl: String!
+  author: UserReference
+  category: CategoryReference
+}
+
+input CreateCategoryArgs {
+  id: Int
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  name: String!
+}
+
+input UpdateCategoryArgs {
+  id: Int!
+  createdBy: String
+  createdDate: DateTime
+  lastModifiedBy: String
+  lastModifiedDate: DateTime
+  name: String!
+}
+
+type Subscription {
+  usersUpdated: Int!
+  postsUpdated: Int!
+  categoriesUpdated: Int!
+}

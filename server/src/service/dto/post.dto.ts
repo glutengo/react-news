@@ -5,10 +5,13 @@ import { BaseDTO } from './base.dto';
 import { CategoryDTO } from './category.dto';
 
 import { UserDTO } from './user.dto';
+import { InputType, ObjectType } from '@nestjs/graphql';
 
 /**
  * A PostDTO object.
  */
+@ObjectType({ isAbstract: true })
+@InputType({ isAbstract: true })
 export class PostDTO extends BaseDTO {
     @ApiModelProperty({ description: 'title field', required: false })
     title: string;

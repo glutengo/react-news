@@ -6,7 +6,7 @@ import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntity, deleteEntity } from './post.reducer';
+import { getEntity, deleteEntity } from './post.gql-actions';
 
 export interface IPostDeleteDialogProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 

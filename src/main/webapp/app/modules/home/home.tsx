@@ -5,8 +5,8 @@ import { Translate } from 'react-jhipster';
 import { connect } from 'react-redux';
 import { Row, Col, Alert } from 'reactstrap';
 import { IRootState } from 'app/shared/reducers';
-import { getEntities as getPosts } from '../../entities/post/post.reducer';
-import { getEntities as getCategories } from '../../entities/category/category.reducer';
+import { getEntities as getPosts } from '../../entities/post/post.gql-actions';
+import { getEntities as getCategories } from '../../entities/category/category.gql-actions';
 import { PostItem } from 'app/entities/post/post-item';
 import { CategoryItem } from 'app/entities/category/category-item';
 import { POSTS_PER_CATEGORY } from 'app/shared/util/pagination.constants';
@@ -33,7 +33,11 @@ export const Home = (props: IHomeProp) => {
           <Translate contentKey="home.latest">Latest Posts</Translate>
         </h2>
         <Row className="px-2 d-flex align-items-stretch">
-          { posts.map(p => (<Col key={p.id} className="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch"><PostItem post={p}/></Col>))}
+          {posts.map(p => (
+            <Col key={p.id} className="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch">
+              <PostItem post={p} />
+            </Col>
+          ))}
         </Row>
       </div>
       <div>
@@ -41,23 +45,25 @@ export const Home = (props: IHomeProp) => {
           <Translate contentKey="home.categories">Categories</Translate>
         </h2>
         <div>
-          { categories.map(c => (<CategoryItem key={c.id} category={c}/>))}
+          {categories.map(c => (
+            <CategoryItem key={c.id} category={c} />
+          ))}
         </div>
       </div>
     </Col>
   );
 };
 
-const mapStateToProps = (storeState: IRootState)  => ({
+const mapStateToProps = (storeState: IRootState) => ({
   account: storeState.authentication.account,
   isAuthenticated: storeState.authentication.isAuthenticated,
   posts: storeState.post.entities,
-  categories: storeState.category.entities
+  categories: storeState.category.entities,
 });
 
 const mapDispatchToProps = {
   getPosts,
-  getCategories
+  getCategories,
 };
 
 type StateProps = ReturnType<typeof mapStateToProps>;

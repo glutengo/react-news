@@ -1,10 +1,17 @@
 const path = require('path');
+
 const webpack = require('webpack');
+
 const { merge } = require('webpack-merge');
+
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
 const ESLintPlugin = require('eslint-webpack-plugin');
+
 const MergeJsonWebpackPlugin = require('merge-jsons-webpack-plugin');
 
 const utils = require('./utils.js');
@@ -12,33 +19,19 @@ const utils = require('./utils.js');
 const getTsLoaderRule = env => {
   const rules = [
     {
-      loader: 'cache-loader',
-      options: {
-        cacheDirectory: path.resolve('target/cache-loader'),
-      },
-    },
-    {
-      loader: 'thread-loader',
-      options: {
-        // There should be 1 cpu for the fork-ts-checker-webpack-plugin.
-        // The value may need to be adjusted (e.g. to 1) in some CI environments,
-        // as cpus() may report more cores than what are available to the build.
-        workers: require('os').cpus().length - 1,
-      },
-    },
-    {
       loader: 'ts-loader',
       options: {
-        transpileOnly: true,
-        happyPackMode: true,
+        getCustomTransformers: path.resolve(__dirname, './graphql.transformer.js'),
       },
     },
   ];
+
   if (env === 'development') {
     rules.unshift({
       loader: 'react-hot-loader/webpack',
     });
   }
+
   return rules;
 };
 
@@ -118,15 +111,34 @@ module.exports = options =>
               context: './node_modules/swagger-ui-dist/',
               from: '*.{js,css,html,png}',
               to: 'swagger-ui/',
-              globOptions: { ignore: ['**/index.html'] },
+              globOptions: {
+                ignore: ['**/index.html'],
+              },
             },
-            { from: './node_modules/axios/dist/axios.min.js', to: 'swagger-ui/' },
-            { from: './src/main/webapp/swagger-ui/', to: 'swagger-ui/' },
-            { from: './src/main/webapp/content/', to: 'content/' },
-            { from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
-            { from: './src/main/webapp/manifest.webapp', to: 'manifest.webapp' },
-            // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
-            { from: './src/main/webapp/robots.txt', to: 'robots.txt' },
+            {
+              from: './node_modules/axios/dist/axios.min.js',
+              to: 'swagger-ui/',
+            },
+            {
+              from: './src/main/webapp/swagger-ui/',
+              to: 'swagger-ui/',
+            },
+            {
+              from: './src/main/webapp/content/',
+              to: 'content/',
+            },
+            {
+              from: './src/main/webapp/favicon.ico',
+              to: 'favicon.ico',
+            },
+            {
+              from: './src/main/webapp/manifest.webapp',
+              to: 'manifest.webapp',
+            }, // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
+            {
+              from: './src/main/webapp/robots.txt',
+              to: 'robots.txt',
+            },
           ],
         }),
         new HtmlWebpackPlugin({
@@ -138,11 +150,13 @@ module.exports = options =>
         new MergeJsonWebpackPlugin({
           output: {
             groupBy: [
-              { pattern: './src/main/webapp/i18n/en/*.json', fileName: './i18n/en.json' },
-              // jhipster-needle-i18n-language-webpack - JHipster will add/remove languages in this array
+              {
+                pattern: './src/main/webapp/i18n/en/*.json',
+                fileName: './i18n/en.json',
+              }, // jhipster-needle-i18n-language-webpack - JHipster will add/remove languages in this array
             ],
           },
-        })
+        }),
       ],
     }
   );

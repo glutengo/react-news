@@ -4,6 +4,7 @@ import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { PostDTO } from '../service/dto/post.dto';
 import { PostMapper } from '../service/mapper/post.mapper';
 import { PostRepository } from '../repository/post.repository';
+import { PubSubService } from './graphql/pub-sub.service';
 
 const relationshipNames = [];
 relationshipNames.push('author');
@@ -13,7 +14,10 @@ relationshipNames.push('category');
 export class PostService {
     logger = new Logger('PostService');
 
-    constructor(@InjectRepository(PostRepository) private postRepository: PostRepository) {}
+    constructor(
+        @InjectRepository(PostRepository) private postRepository: PostRepository,
+        private pubSub: PubSubService,
+    ) {}
 
     async findById(id: number): Promise<PostDTO | undefined> {
         const options = { relations: relationshipNames };
@@ -31,7 +35,7 @@ export class PostService {
         const resultList = await this.postRepository.findAndCount(options);
         const postDTO: PostDTO[] = [];
         if (resultList && resultList[0]) {
-            resultList[0].forEach(post => postDTO.push(PostMapper.fromEntityToDTO(post)));
+            resultList[0].forEach((post) => postDTO.push(PostMapper.fromEntityToDTO(post)));
             resultList[0] = postDTO;
         }
         return resultList;
@@ -46,6 +50,7 @@ export class PostService {
             entity.lastModifiedBy = creator;
         }
         const result = await this.postRepository.save(entity);
+        this.pubSub.publish('posts', result.id);
         return PostMapper.fromEntityToDTO(result);
     }
 
@@ -55,6 +60,7 @@ export class PostService {
             entity.lastModifiedBy = updater;
         }
         const result = await this.postRepository.save(entity);
+        this.pubSub.publish('posts', entity.id);
         return PostMapper.fromEntityToDTO(result);
     }
 
@@ -64,6 +70,7 @@ export class PostService {
         if (entityFind) {
             throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
         }
+        this.pubSub.publish('posts', id);
         return;
     }
 }

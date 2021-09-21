@@ -2,10 +2,13 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsEmail } from 'class-validator';
 import { BaseDTO } from './base.dto';
 import { Exclude } from 'class-transformer';
+import { InputType, ObjectType, HideField } from '@nestjs/graphql';
 
 /**
  * An User DTO object.
  */
+@ObjectType({ isAbstract: true })
+@InputType({ isAbstract: true })
 export class UserDTO extends BaseDTO {
     @ApiModelProperty({ uniqueItems: true, example: 'myuser', description: 'User login' })
     @IsString()
@@ -33,10 +36,11 @@ export class UserDTO extends BaseDTO {
         description: 'Array of permissions',
         required: false,
     })
-    authorities?: any[];
+    authorities?: string[];
 
     @Exclude()
     @ApiModelProperty({ example: 'myuser', description: 'User password' })
+    @HideField()
     password: string;
 
     @ApiModelProperty({ example: 'http://my-image-url', description: 'Image url', required: false })

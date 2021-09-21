@@ -4,6 +4,7 @@ import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { CategoryDTO } from '../service/dto/category.dto';
 import { CategoryMapper } from '../service/mapper/category.mapper';
 import { CategoryRepository } from '../repository/category.repository';
+import { PubSubService } from './graphql/pub-sub.service';
 
 const relationshipNames = [];
 
@@ -11,7 +12,10 @@ const relationshipNames = [];
 export class CategoryService {
     logger = new Logger('CategoryService');
 
-    constructor(@InjectRepository(CategoryRepository) private categoryRepository: CategoryRepository) {}
+    constructor(
+        @InjectRepository(CategoryRepository) private categoryRepository: CategoryRepository,
+        private pubSub: PubSubService,
+    ) {}
 
     async findById(id: number): Promise<CategoryDTO | undefined> {
         const options = { relations: relationshipNames };
@@ -29,7 +33,7 @@ export class CategoryService {
         const resultList = await this.categoryRepository.findAndCount(options);
         const categoryDTO: CategoryDTO[] = [];
         if (resultList && resultList[0]) {
-            resultList[0].forEach(category => categoryDTO.push(CategoryMapper.fromEntityToDTO(category)));
+            resultList[0].forEach((category) => categoryDTO.push(CategoryMapper.fromEntityToDTO(category)));
             resultList[0] = categoryDTO;
         }
         return resultList;
@@ -44,6 +48,7 @@ export class CategoryService {
             entity.lastModifiedBy = creator;
         }
         const result = await this.categoryRepository.save(entity);
+        this.pubSub.publish('categories', result.id);
         return CategoryMapper.fromEntityToDTO(result);
     }
 
@@ -53,6 +58,7 @@ export class CategoryService {
             entity.lastModifiedBy = updater;
         }
         const result = await this.categoryRepository.save(entity);
+        this.pubSub.publish('categories', entity.id);
         return CategoryMapper.fromEntityToDTO(result);
     }
 
@@ -62,6 +68,7 @@ export class CategoryService {
         if (entityFind) {
             throw new HttpException('Error, entity not deleted!', HttpStatus.NOT_FOUND);
         }
+        this.pubSub.publish('categories', id);
         return;
     }
 }

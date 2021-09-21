@@ -1,0 +1,42 @@
+
+query getCategories($page: Int, $size: Int, $sort: String) {
+    result: getCategories(page: $page, size: $size, sort: $sort) {
+        edges {
+            node {
+                ...DetailCategory
+            }
+        }
+        totalCount
+    }
+}
+
+query getCategory($id: Int!) {
+    result: getCategory(id: $id) {
+        ...DetailCategory
+    }
+}
+
+mutation deleteCategory($id: Int!) {
+    result: deleteCategory(id: $id)
+}
+
+mutation createCategory($category: CreateCategoryArgs!) {
+    result: createCategory(category: $category) {
+        ...DetailCategory
+    }
+}
+
+mutation updateCategory($category: UpdateCategoryArgs!) {
+    result: updateCategory(category: $category) {
+        ...DetailCategory
+    }
+}
+
+fragment BaseCategory on Category {
+    id
+    name
+}
+
+fragment DetailCategory on Category {
+    ...BaseCategory
+}

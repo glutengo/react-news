@@ -6,10 +6,14 @@ import { UserMapper } from './mapper/user.mapper';
 import { UserRepository } from '../repository/user.repository';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { transformPassword } from '../security';
+import { PubSubService } from './graphql/pub-sub.service';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
+    constructor(
+        @InjectRepository(UserRepository) private userRepository: UserRepository,
+        private pubSub: PubSubService,
+    ) {}
 
     async findById(id: number): Promise<UserDTO | undefined> {
         const result = await this.userRepository.findOne(id);
@@ -50,16 +54,19 @@ export class UserService {
             user.lastModifiedBy = creator;
         }
         const result = await this.userRepository.save(user);
+        this.pubSub.publish('users', result.id);
         return UserMapper.fromEntityToDTO(this.flatAuthorities(result));
     }
 
     async update(userDTO: UserDTO, updater?: string): Promise<UserDTO | undefined> {
+        this.pubSub.publish('users', userDTO.id);
         return this.save(userDTO, updater);
     }
 
     async delete(userDTO: UserDTO): Promise<UserDTO | undefined> {
         const user = UserMapper.fromDTOtoEntity(userDTO);
         const result = await this.userRepository.remove(user);
+        this.pubSub.publish('users', user.id);
         return UserMapper.fromEntityToDTO(result);
     }
 

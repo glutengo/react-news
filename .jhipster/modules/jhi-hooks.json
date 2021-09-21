@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Gql generator",
+    "npmPackageName": "generator-jhipster-gql",
+    "description": "GraphQL integration for JHipster",
+    "hookFor": "entity",
+    "hookType": "post",
+    "generatorCallback": "jhipster-gql:entity"
+  }
+]

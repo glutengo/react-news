@@ -7,7 +7,7 @@ import { Translate, getSortState, IPaginationBaseState, JhiPagination, JhiItemCo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities } from './post.reducer';
+import { getEntities } from './post.gql-actions';
 import { IPost } from 'app/shared/model/post.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
@@ -20,12 +20,17 @@ export const Post = (props: IPostProps) => {
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
   );
 
-  const getAllEntities = () => {
-    props.getEntities(paginationState.activePage - 1, paginationState.itemsPerPage, `${paginationState.sort},${paginationState.order}`);
+  const getAllEntities = (bypassCache?: boolean) => {
+    props.getEntities(
+      paginationState.activePage - 1,
+      paginationState.itemsPerPage,
+      `${paginationState.sort},${paginationState.order}`,
+      bypassCache
+    );
   };
 
-  const sortEntities = () => {
-    getAllEntities();
+  const sortEntities = (bypassCache?: boolean) => {
+    getAllEntities(bypassCache);
     const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
     if (props.location.search !== endURL) {
       props.history.push(`${props.location.pathname}${endURL}`);
@@ -66,7 +71,7 @@ export const Post = (props: IPostProps) => {
     });
 
   const handleSyncList = () => {
-    sortEntities();
+    sortEntities(true);
   };
 
   const { postList, match, loading, totalItems } = props;

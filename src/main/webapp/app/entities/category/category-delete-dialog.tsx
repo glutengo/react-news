@@ -6,7 +6,7 @@ import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntity, deleteEntity } from './category.reducer';
+import { getEntity, deleteEntity } from './category.gql-actions';
 
 export interface ICategoryDeleteDialogProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 

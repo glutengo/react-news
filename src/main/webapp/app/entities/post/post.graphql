@@ -1,0 +1,52 @@
+
+query getPosts($page: Int, $size: Int, $sort: String) {
+    result: getPosts(page: $page, size: $size, sort: $sort) {
+        edges {
+            node {
+                ...DetailPost
+            }
+        }
+        totalCount
+    }
+}
+
+query getPost($id: Int!) {
+    result: getPost(id: $id) {
+        ...DetailPost
+    }
+}
+
+mutation deletePost($id: Int!) {
+    result: deletePost(id: $id)
+}
+
+mutation createPost($post: CreatePostArgs!) {
+    result: createPost(post: $post) {
+        ...DetailPost
+    }
+}
+
+mutation updatePost($post: UpdatePostArgs!) {
+    result: updatePost(post: $post) {
+        ...DetailPost
+    }
+}
+
+fragment BasePost on Post {
+    id
+    title
+    content
+    coverImageUrl
+}
+
+fragment DetailPost on Post {
+    ...BasePost
+    author {
+        id
+        login
+    }
+    category {
+        id
+        name
+    }
+}

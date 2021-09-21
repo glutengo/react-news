@@ -8,10 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
 import { IUser } from 'app/shared/model/user.model';
-import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
+import { getUsers } from 'app/modules/administration/user-management/user-management.gql-actions';
 import { ICategory } from 'app/shared/model/category.model';
-import { getEntities as getCategories } from 'app/entities/category/category.reducer';
-import { getEntity, updateEntity, createEntity, reset } from './post.reducer';
+import { getEntities as getCategories } from 'app/entities/category/category.gql-actions';
+import { getEntity, updateEntity, createEntity, reset } from './post.gql-actions';
 import { IPost } from 'app/shared/model/post.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
@@ -106,7 +106,14 @@ export const PostUpdate = (props: IPostUpdateProps) => {
                 <Label for="post-author">
                   <Translate contentKey="newsApp.post.author">Author</Translate>
                 </Label>
-                <AvInput id="post-author" data-cy="author" type="select" className="form-control" name="authorId" defaultValue={postEntity.author?.id}>
+                <AvInput
+                  id="post-author"
+                  data-cy="author"
+                  type="select"
+                  className="form-control"
+                  name="authorId"
+                  defaultValue={postEntity.author?.id}
+                >
                   <option value="" key="0" />
                   {users
                     ? users.map(otherEntity => (
@@ -121,7 +128,14 @@ export const PostUpdate = (props: IPostUpdateProps) => {
                 <Label for="post-category">
                   <Translate contentKey="newsApp.post.category">Category</Translate>
                 </Label>
-                <AvInput id="post-category" data-cy="category" type="select" className="form-control" name="categoryId" defaultValue={postEntity.category?.id}>
+                <AvInput
+                  id="post-category"
+                  data-cy="category"
+                  type="select"
+                  className="form-control"
+                  name="categoryId"
+                  defaultValue={postEntity.category?.id}
+                >
                   <option value="" key="0" />
                   {categories
                     ? categories.map(otherEntity => (
